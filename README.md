@@ -33,3 +33,10 @@
 - KNN: Train Accuracy = 0.9285, CV Score = 0.8276, Test Accuracy = 0.8985
 - LogisticRegression: Train Accuracy = 0.7867, CV Score = 0.7236, Test Accuracy = 0.7901
 - SVM: Train Accuracy = 0.8698, CV Score = 0.8592, Test Accuracy = 0.8583
+
+## Результаты обучения
+- Gradient Boosting: Train Accuracy = 0.8720, CV f1_weighted = 0.8571, Test Accuracy = 0.8623
+- RandomForest: Train Accuracy = 0.8799, CV f1_weighted = 0.8579, Test Accuracy = 0.8645
+- KNN: Train Accuracy = 0.9285, CV f1_weighted = 0.8861, Test Accuracy = 0.8985
+- LogisticRegression: Train Accuracy = 0.7867, CV f1_weighted = 0.7820, Test Accuracy = 0.7901
+- SVM: Train Accuracy = 0.8698, CV f1_weighted = 0.8535, Test Accuracy = 0.8583

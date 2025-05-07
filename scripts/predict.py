@@ -73,3 +73,4 @@ def predict_and_save(test_path, model_path, output_path):
 if __name__ == "__main__":
     # Пример вызова функции (убедитесь, что пути корректны)
     predict_and_save('../data/test.csv', '../results/best_model.pkl', '../results/test_predictions.csv')
+
