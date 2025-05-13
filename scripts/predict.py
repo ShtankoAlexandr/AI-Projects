@@ -2,6 +2,20 @@ import pandas as pd
 from joblib import load
 from sklearn.metrics import accuracy_score, classification_report
 from preprocessing_feature_engineering import engineer_features
+from datetime import datetime
+
+def update_readme_after_prediction(model_name, test_acc, report):
+    """
+    Добавляет в README.md результат предсказания модели на тестовом наборе.
+    """
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open("../README.md", "a", encoding="utf-8") as f:
+        f.write(f"\n## Test.csv Prediction Result ({now})\n")
+        f.write(f"### Model: {model_name}\n")
+        f.write(f"- Test.csv Accuracy: {test_acc:.4f}\n")
+        f.write("\n### Classification Report:\n")
+        f.write(report)
+        f.write("\n")
 
 def predict_and_save(test_path, model_path, output_path):
     """
@@ -61,16 +75,20 @@ def predict_and_save(test_path, model_path, output_path):
         if test_acc < 0.65:
             print("Предупреждение: Test accuracy ниже 0.65")
         print("\nОтчет по классификации:")
-        print(classification_report(y_true, y_pred, zero_division=0))
+        report = classification_report(y_true, y_pred, zero_division=0)
+        print(report)
         print("Распределение предсказанных классов:")
         print(pd.Series(y_pred).value_counts(normalize=True))
         print("Распределение истинных классов:")
         print(pd.Series(y_true).value_counts(normalize=True))
+        
+        # Обновление README.md
+        update_readme_after_prediction(model.__class__.__name__, test_acc, report)
+
         return test_acc
 
     return None
 
 if __name__ == "__main__":
-    # Пример вызова функции (убедитесь, что пути корректны)
+    # Пример вызова функции 
     predict_and_save('../data/test.csv', '../results/best_model.pkl', '../results/test_predictions.csv')
-
