@@ -42,7 +42,7 @@ def train_models_with_gridsearch(X_train, y_train):
             ("clf", GradientBoostingClassifier(random_state=42))
         ]),
         {
-            "clf__n_estimators": [180],  # [20,70, 125,150,200]
+            "clf__n_estimators": [180],  # [20,70, 125,150,200] you can choose
             "clf__learning_rate": [0.2],  # [0.1, 0.2]
             "clf__max_depth": [5],       # [7,15, 17]
             "clf__min_samples_split": [4],#[2,4,6]
