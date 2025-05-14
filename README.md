@@ -93,7 +93,7 @@ project/
 ### 1. Clone and Setup Environment
 
 ```bash
-git clone https://learn.01founders.co/git/oshtanko/forest-prediction.git
+git clone https://github.com/ShtankoAlexandr/AI-Projects
 cd forest-prediction
 python -m venv venv
 venv\Scripts\activate       # Windows
