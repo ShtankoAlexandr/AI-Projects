@@ -6,7 +6,7 @@ from datetime import datetime
 
 def update_readme_after_prediction(model_name, test_acc, report):
     """
-    Добавляет в README.md результат предсказания модели на тестовом наборе.
+    Appends the test set prediction result to README.md.
     """
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open("../README.md", "a", encoding="utf-8") as f:
@@ -19,70 +19,70 @@ def update_readme_after_prediction(model_name, test_acc, report):
 
 def predict_and_save(test_path, model_path, output_path):
     """
-    Загружает тестовые данные, выполняет предсказания и сохраняет результаты.
+    Loads the test data, performs predictions, and saves the results.
     """
     try:
-        # Загрузка тестовых данных
+        # Load test data
         test_df = pd.read_csv(test_path)
         print(f"test.csv shape: {test_df.shape}")
-        print("Столбцы в test.csv:", test_df.columns.tolist())
-        print("Пропуски в test.csv:\n", test_df.isnull().sum())
-        print("Статистика test.csv:\n", test_df.describe())
+        print("Columns in test.csv:", test_df.columns.tolist())
+        print("Missing values in test.csv:\n", test_df.isnull().sum())
+        print("Statistics of test.csv:\n", test_df.describe())
     except FileNotFoundError:
-        print(f"Ошибка: Файл {test_path} не найден")
+        print(f"Error: File {test_path} not found")
         return
 
-    # Предобработка данных: создание новых признаков
+    # Data preprocessing: feature engineering
     test_df = engineer_features(test_df)
-    print(f"После feature engineering: {test_df.shape}")
-    print("Столбцы после feature engineering:", test_df.columns.tolist())
+    print(f"After feature engineering: {test_df.shape}")
+    print("Columns after feature engineering:", test_df.columns.tolist())
 
-    # Проверка наличия столбца "Cover_Type"
+    # Check if the 'Cover_Type' column exists
     y_true = test_df.get("Cover_Type", None)
     if "Cover_Type" in test_df.columns:
-        print("Найден Cover_Type, удаляем его для предсказаний")
+        print("Found 'Cover_Type', removing it for predictions")
         test_df = test_df.drop(columns=["Cover_Type"])
 
-    # Загрузка модели
+    # Load model
     try:
         model = load(model_path)
     except FileNotFoundError:
-        print(f"Ошибка: Модель не найдена по пути {model_path}")
+        print(f"Error: Model not found at {model_path}")
         return
-    print("Ожидаемые признаки модели:", model.feature_names_in_.tolist())
+    print("Expected model features:", model.feature_names_in_.tolist())
 
-    # Проверка наличия всех необходимых признаков
+    # Check for all required features
     if not all(col in test_df.columns for col in model.feature_names_in_):
         missing_cols = [col for col in model.feature_names_in_ if col not in test_df.columns]
-        raise ValueError(f"Отсутствуют признаки в test_df: {missing_cols}")
+        raise ValueError(f"Missing features in test_df: {missing_cols}")
 
-    # Упорядочивание признаков
+    # Arrange features
     test_df = test_df[model.feature_names_in_]
-    print("Финальные признаки для предсказания:", test_df.columns.tolist())
+    print("Final features for prediction:", test_df.columns.tolist())
 
-    # Выполнение предсказаний
+    # Make predictions
     y_pred = model.predict(test_df)
 
-    # Сохранение результата в CSV-файл
+    # Save the result to a CSV file
     output = pd.DataFrame({"Cover_Type": y_pred})
     output.to_csv(output_path, index=False)
-    print(f"✅ Предсказания сохранены в {output_path}")
+    print(f"✅ Predictions saved at {output_path}")
 
-    # Диагностика (если доступны истинные метки y_true)
+    # Diagnostics (if true labels y_true are available)
     if y_true is not None:
         test_acc = accuracy_score(y_true, y_pred)
-        print(f"Точность на тестовом наборе: {test_acc:.4f}")
+        print(f"Test set accuracy: {test_acc:.4f}")
         if test_acc < 0.65:
-            print("Предупреждение: Test accuracy ниже 0.65")
-        print("\nОтчет по классификации:")
+            print("Warning: Test accuracy is below 0.65")
+        print("\nClassification report:")
         report = classification_report(y_true, y_pred, zero_division=0)
         print(report)
-        print("Распределение предсказанных классов:")
+        print("Distribution of predicted classes:")
         print(pd.Series(y_pred).value_counts(normalize=True))
-        print("Распределение истинных классов:")
+        print("Distribution of true classes:")
         print(pd.Series(y_true).value_counts(normalize=True))
         
-        # Обновление README.md
+        # Update README.md
         update_readme_after_prediction(model.__class__.__name__, test_acc, report)
 
         return test_acc
@@ -90,5 +90,5 @@ def predict_and_save(test_path, model_path, output_path):
     return None
 
 if __name__ == "__main__":
-    # Пример вызова функции 
+    # Example function call
     predict_and_save('../data/test.csv', '../results/best_model.pkl', '../results/test_predictions.csv')
