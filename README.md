@@ -9,7 +9,7 @@ This project aims to develop machine learning models to accurately classify fore
 The dataset is provided in three files:
 
 - `train.csv`: Main dataset used for model training and validation.
-- `test.csv`: ataset used for model testing and validation.
+- `test.csv`: Dataset used for model testing and validation.
 - `covtype.info`: Metadata file describing all features and their meanings.
 
 ---
